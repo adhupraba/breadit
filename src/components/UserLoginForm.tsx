@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { cn } from "@/lib/utils";
+import { signIn } from "next-auth/react";
 
 interface IUserAuthFormProps {}
 
@@ -18,7 +19,7 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-const UserAuthForm: FC<IUserAuthFormProps> = () => {
+const UserLoginForm: FC<IUserAuthFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { toast } = useToast();
@@ -34,11 +35,12 @@ const UserAuthForm: FC<IUserAuthFormProps> = () => {
     setIsLoading(true);
 
     try {
+      await signIn("credentials", { email: values.email, password: values.password });
     } catch (err) {
       // toast notification
       toast({
         title: "There was a problem.",
-        description: "There was an error logging in with Google",
+        description: "There was an error logging in.",
         variant: "destructive",
       });
     } finally {
@@ -91,4 +93,4 @@ const UserAuthForm: FC<IUserAuthFormProps> = () => {
   );
 };
 
-export default UserAuthForm;
+export default UserLoginForm;
