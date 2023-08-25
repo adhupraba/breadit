@@ -6,7 +6,7 @@ import { Icons } from "./Icons";
 import { AvatarProps } from "@radix-ui/react-avatar";
 
 interface IUserAvatarProps extends AvatarProps {
-  user: Pick<UserData, "name" | "image">;
+  user: Partial<Pick<UserData, "name" | "image">>;
 }
 
 const UserAvatar: FC<IUserAvatarProps> = ({ user, ...props }) => {

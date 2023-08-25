@@ -2,7 +2,7 @@ import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 
 type UserData = {
-  id: string;
+  id: number;
   name: string;
   email: string;
   username: string;

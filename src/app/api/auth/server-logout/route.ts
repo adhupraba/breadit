@@ -5,14 +5,10 @@ import { NextApiRequest } from "next";
 
 export async function GET(req: NextApiRequest) {
   try {
-    const cookieStore = cookies().getAll();
-
     const res = await fetch(`${serverEnv.apiUrl}/api/auth/sign-out`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        Cookie: cookieStore.map((cookie) => `${cookie.name}=${cookie.value}`).join(";"),
-      },
+      headers: req.headers as any,
     });
 
     if (!res.ok) {

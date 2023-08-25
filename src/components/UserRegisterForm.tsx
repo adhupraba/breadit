@@ -10,7 +10,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { webEnv } from "@/constants";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 interface IUserAuthFormProps {}
@@ -24,8 +23,6 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 const UserRegisterForm: FC<IUserAuthFormProps> = () => {
-  const router = useRouter();
-
   const [isLoading, setIsLoading] = useState(false);
 
   const { toast } = useToast();
