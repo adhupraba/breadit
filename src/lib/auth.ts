@@ -5,6 +5,9 @@ import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
+import { serverAxios } from "./server-axios";
+import { TApiRes } from "@/types/helpers";
+import { TUser } from "@/types/model";
 
 async function refreshAccessToken(tokenObject: JWT) {
   // Get a new set of tokens with a refreshToken
@@ -66,6 +69,14 @@ const callbacks: Partial<CallbacksOptions<Profile, Account>> = {
   },
 };
 
+type SigninResData = {
+  user: TUser;
+  accessToken: string;
+  accessTokenExpiry: number;
+  refreshToken: string;
+  refreshTokenExpiry: number;
+};
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 60 * 60 },
   pages: { signIn: "/sign-in" },
@@ -74,12 +85,12 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: { email: {}, password: {} },
       authorize: async (credentials, req) => {
-        const { data, headers } = await axios.post(`${serverEnv.apiUrl}/api/auth/sign-in`, {
+        const { data, headers } = await serverAxios().post<TApiRes<SigninResData>>("/api/auth/sign-in", {
           email: credentials?.email,
           password: credentials?.password,
         });
 
-        if (!data.user) return null;
+        if (data.error || !data.data?.user) return null;
 
         const loginCookies = headers["set-cookie"] as string[];
         const cookiesArr: ResponseCookie[] = loginCookies.map((cookie) => {
@@ -98,7 +109,7 @@ export const authOptions: NextAuthOptions = {
           cookies().set(cookie);
         });
 
-        return data;
+        return data.data as any;
       },
     }),
   ],

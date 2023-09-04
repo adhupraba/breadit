@@ -1,4 +1,4 @@
-export type GenericObject<T = any> = { [key: string]: T };
+import { GenericObject } from "./helpers";
 
 export type TVoteType = "UP" | "DOWN";
 
@@ -64,4 +64,11 @@ export type TVote = {
   type: TVoteType;
   createdAt: string;
   updatedAt: string;
+};
+
+export type ExtendedPost = TPost & {
+  author: TUser;
+  votes: TVote[];
+  comments: TComment[];
+  subreddit: TSubreddit;
 };

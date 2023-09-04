@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["static.crunchyroll.com"],
+    domains: ["static.crunchyroll.com", "uploadthing.com"],
   },
 };
 

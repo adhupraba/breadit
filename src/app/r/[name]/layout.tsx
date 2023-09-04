@@ -3,29 +3,35 @@ import { serverAxios } from "@/lib/server-axios";
 import { TSubredditData } from "./types";
 import { notFound } from "next/navigation";
 import { TSubscription } from "@/types/model";
+import { TApiRes } from "@/types/helpers";
 import { format } from "date-fns";
 import SubscribeLeaveToggle from "@/components/SubscribeLeaveToggle";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/Button";
+import React from "react";
 
 interface ILayoutProps {
   children: React.ReactNode;
   params: { name: string };
 }
 
-const Layout = async ({ children, params: { name } }: ILayoutProps) => {
+const Layout = async ({ children, params }: ILayoutProps) => {
   const session = await getAuthSession();
-  const { data: subreddit, status } = await serverAxios().get<TSubredditData>(`/api/subreddit/${name}`, {
+  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${params.name}`, {
     validateStatus: () => true,
   });
 
-  if ((status >= 400 && status < 600) || !subreddit.id) {
-    console.error("error response =>", subreddit);
+  if ((status >= 400 && status < 600) || data.error) {
+    console.error("error response =>", data);
     return notFound();
   }
+
+  const subreddit = data.data;
 
   let subscription: TSubscription | null = null;
 
   if (session?.user) {
-    const { data, status } = await serverAxios().get<TSubscription | null>(
+    const { data, status } = await serverAxios().get<TApiRes<TSubscription | null>>(
       `/api/subscription/subreddit/${subreddit.id}`,
       {
         validateStatus: () => true,
@@ -33,8 +39,8 @@ const Layout = async ({ children, params: { name } }: ILayoutProps) => {
       }
     );
 
-    if (status >= 200 && status < 300 && data?.id) {
-      subscription = data;
+    if (status >= 200 && status < 300 && !data.error) {
+      subscription = data.data;
     }
   }
 
@@ -84,6 +90,13 @@ const Layout = async ({ children, params: { name } }: ILayoutProps) => {
                   isSubscribed={isSubscribed}
                 />
               ) : null}
+
+              <Link
+                className={buttonVariants({ variant: "outline", className: "w-full mb-6" })}
+                href={`/r/${params.name}/submit`}
+              >
+                Create Post
+              </Link>
             </dl>
           </div>
         </div>

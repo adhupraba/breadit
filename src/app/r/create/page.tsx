@@ -9,9 +9,10 @@ import { webAxios } from "@/lib/web-axios";
 import { AxiosError } from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useCustomToast } from "@/hooks/use-custom-toast";
+import { TApiRes } from "@/types/helpers";
 
 type CreateSubredditPayload = { name: string };
-type CreateSubredditResponse = { id: number; name: string; creatorId: number; createdAt: Date; updatedAt: Date };
+type CreateSubredditResData = { id: number; name: string; creatorId: number; createdAt: Date; updatedAt: Date };
 
 const CreateSubReddit = () => {
   const router = useRouter();
@@ -22,8 +23,8 @@ const CreateSubReddit = () => {
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
       const payload: CreateSubredditPayload = { name: input };
-      const { data } = await webAxios.post<CreateSubredditResponse>("/api/subreddit", payload);
-      return data;
+      const { data } = await webAxios.post<TApiRes<CreateSubredditResData>>("/api/subreddit", payload);
+      return data.data as CreateSubredditResData;
     },
     onError: (err) => {
       if (err instanceof AxiosError) {

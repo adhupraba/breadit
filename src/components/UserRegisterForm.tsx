@@ -8,9 +8,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { cn } from "@/lib/utils";
-import axios from "axios";
-import { webEnv } from "@/constants";
 import { signIn } from "next-auth/react";
+import { webAxios } from "@/lib/web-axios";
 
 interface IUserAuthFormProps {}
 
@@ -39,7 +38,7 @@ const UserRegisterForm: FC<IUserAuthFormProps> = () => {
     setIsLoading(true);
 
     try {
-      await axios.post(`${webEnv.apiUrl}/api/auth/sign-up`, {
+      await webAxios.post("/api/auth/sign-up", {
         name: values.name,
         email: values.email,
         password: values.password,

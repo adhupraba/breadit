@@ -25,7 +25,7 @@ const SubscribeLeaveToggle: FC<ISubscribeLeaveToggleProps> = ({ subredditId, sub
     mutationFn: async () => {
       const payload: SubscribeToSubredditPayload = { subredditId };
       const { data } = await webAxios.post(`/api/subscription/subscribe`, payload);
-      return data as boolean;
+      return data;
     },
     onError: (err) => {
       if (err instanceof AxiosError) {
@@ -65,7 +65,7 @@ const SubscribeLeaveToggle: FC<ISubscribeLeaveToggleProps> = ({ subredditId, sub
     mutationFn: async () => {
       const payload: SubscribeToSubredditPayload = { subredditId };
       const { data } = await webAxios.post(`/api/subscription/unsubscribe`, payload);
-      return data as boolean;
+      return data;
     },
     onError: (err) => {
       if (err instanceof AxiosError) {

@@ -1,10 +1,10 @@
 import MiniCreatePost from "@/components/MiniCreatePost";
 import { getAuthSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
-import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
 import { TSubredditData } from "./types";
-import { serverEnv } from "@/constants";
+import { TApiRes } from "@/types/helpers";
+import PostFeed from "@/components/PostFeed";
 
 interface ISubredditPageProps {
   params: { name: string };
@@ -12,14 +12,16 @@ interface ISubredditPageProps {
 
 const SubredditPage = async ({ params: { name } }: ISubredditPageProps) => {
   const session = await getAuthSession();
-  const { data: subreddit, status } = await serverAxios().get<TSubredditData>(`/api/subreddit/${name}`, {
+  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${name}`, {
     validateStatus: () => true,
   });
 
-  if ((status >= 400 && status < 600) || !subreddit.id) {
-    console.log("error response =>", subreddit);
+  if ((status >= 400 && status < 600) || data.error) {
+    console.log("error response =>", data);
     return notFound();
   }
+
+  const subreddit = data.data;
 
   return (
     <>
@@ -27,6 +29,7 @@ const SubredditPage = async ({ params: { name } }: ISubredditPageProps) => {
       <MiniCreatePost session={session} />
 
       {/* todo: show posts in user feed */}
+      <PostFeed initialPosts={subreddit.posts} subredditName={name} />
     </>
   );
 };
