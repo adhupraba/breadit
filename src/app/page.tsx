@@ -1,14 +1,17 @@
 import { buttonVariants } from "@/components/ui/Button";
+import { getAuthSession } from "@/lib/auth";
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
 
-const Home = () => {
+const Home = async () => {
+  const session = await getAuthSession();
+
   return (
     <Fragment>
       <h1 className="font-bold text-3xl md:text-4xl">Your Feed</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6">
-        {/* feed */}
+        {/* custom feed or general feed based of auth status */}
 
         {/* subreddit info */}
         <div className="overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last">

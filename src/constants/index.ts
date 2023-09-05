@@ -6,4 +6,4 @@ export const serverEnv = {
   apiUrl: process.env.API_URL || "",
 };
 
-export const INFINITE_SCROLLING_PAGINATION_RESULTS = 10;
+export const INFINITE_SCROLLING_PAGINATION_RESULTS = 2;
