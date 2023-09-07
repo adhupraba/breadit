@@ -38,6 +38,7 @@ const PostFeed: FC<IPostFeedProps> = ({ initialPosts, subredditName }) => {
         return allPages.length + 1;
       },
       initialData: { pages: [initialPosts], pageParams: [1] },
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -58,7 +59,7 @@ const PostFeed: FC<IPostFeedProps> = ({ initialPosts, subredditName }) => {
           return prev;
         }, 0);
 
-        const currVote = post.votes.find((vote) => vote.userId === session?.user.id);
+        const currVote = post.votes.find((vote) => vote.userId === session?.user?.id);
 
         if (idx === posts.length - 1) {
           return (

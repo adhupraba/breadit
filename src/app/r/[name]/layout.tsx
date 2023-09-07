@@ -17,9 +17,7 @@ interface ILayoutProps {
 
 const Layout = async ({ children, params }: ILayoutProps) => {
   const session = await getAuthSession();
-  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${params.name}`, {
-    validateStatus: () => true,
-  });
+  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${params.name}`);
 
   if ((status >= 400 && status < 600) || data.error) {
     console.error("error response =>", data);
@@ -32,11 +30,7 @@ const Layout = async ({ children, params }: ILayoutProps) => {
 
   if (session?.user) {
     const { data, status } = await serverAxios().get<TApiRes<TSubscription | null>>(
-      `/api/subscription/subreddit/${subreddit.id}`,
-      {
-        validateStatus: () => true,
-        withCredentials: true,
-      }
+      `/api/subscription/subreddit/${subreddit.id}`
     );
 
     if (status >= 200 && status < 300 && !data.error) {
@@ -77,13 +71,13 @@ const Layout = async ({ children, params }: ILayoutProps) => {
                 </dd>
               </div>
 
-              {subreddit.creatorId == session?.user.id ? (
+              {subreddit.creatorId == session?.user?.id ? (
                 <div className="flex justify-between gap-x-4 py-3">
                   <p className="text-gray-500">You created this community</p>
                 </div>
               ) : null}
 
-              {subreddit.creatorId !== session?.user.id ? (
+              {subreddit.creatorId !== session?.user?.id ? (
                 <SubscribeLeaveToggle
                   subredditId={subreddit.id}
                   subredditName={subreddit.name}

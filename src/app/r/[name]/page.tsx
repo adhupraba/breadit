@@ -3,8 +3,9 @@ import { getAuthSession } from "@/lib/auth";
 import { serverAxios } from "@/lib/server-axios";
 import { notFound } from "next/navigation";
 import { TSubredditData } from "./types";
-import { TApiRes } from "@/types/helpers";
+import { TApiError, TApiRes } from "@/types/helpers";
 import PostFeed from "@/components/PostFeed";
+import ErrorMessage from "@/components/ErrorMessage";
 
 interface ISubredditPageProps {
   params: { name: string };
@@ -12,13 +13,12 @@ interface ISubredditPageProps {
 
 const SubredditPage = async ({ params: { name } }: ISubredditPageProps) => {
   const session = await getAuthSession();
-  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${name}`, {
-    validateStatus: () => true,
-  });
+  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${name}`);
 
-  if ((status >= 400 && status < 600) || data.error) {
-    console.log("error response =>", data);
-    return notFound();
+  if (status === 404) return notFound();
+
+  if (data.error) {
+    return <ErrorMessage status={status} message={(data as TApiError).data.message} />;
   }
 
   const subreddit = data.data;

@@ -10,9 +10,7 @@ interface IPostCreatePageProps {
 }
 
 const PostCreatePage = async ({ params }: IPostCreatePageProps) => {
-  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${params.name}`, {
-    validateStatus: () => true,
-  });
+  const { data, status } = await serverAxios().get<TApiRes<TSubredditData>>(`/api/subreddit/${params.name}`);
 
   if ((status >= 400 && status < 600) || data.error) {
     console.error("error response =>", data);

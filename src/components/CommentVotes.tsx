@@ -4,7 +4,7 @@ import { useCustomToast } from "@/hooks/use-custom-toast";
 import { TVoteType } from "@/types/model";
 import { usePrevious } from "@mantine/hooks";
 import { FC, useEffect, useState } from "react";
-import { Button } from "../ui/Button";
+import { Button } from "./ui/Button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
@@ -12,15 +12,15 @@ import { webAxios } from "@/lib/web-axios";
 import { AxiosError } from "axios";
 import { toast } from "@/hooks/use-toast";
 
-interface IPostVoteClientProps {
-  postId: number;
+interface ICommentVotesProps {
+  commentId: number;
   initialVoteCount: number;
   initialVote?: TVoteType | null;
 }
 
-type CreatePostVotePayload = { postId: number; voteType: TVoteType };
+type CreateCommentVotesPayload = { commentId: number; voteType: TVoteType };
 
-const PostVoteClient: FC<IPostVoteClientProps> = ({ postId, initialVoteCount, initialVote }) => {
+const CommentVotes: FC<ICommentVotesProps> = ({ commentId, initialVoteCount, initialVote }) => {
   const { loginToast } = useCustomToast();
 
   const [voteCount, setVoteCount] = useState(initialVoteCount);
@@ -29,8 +29,8 @@ const PostVoteClient: FC<IPostVoteClientProps> = ({ postId, initialVoteCount, in
 
   const { mutate: votePost } = useMutation({
     mutationFn: async (type: TVoteType) => {
-      const payload: CreatePostVotePayload = { postId, voteType: type };
-      await webAxios.patch("/api/post/vote", payload);
+      const payload: CreateCommentVotesPayload = { commentId, voteType: type };
+      await webAxios.patch("/api/comment/vote", payload);
     },
     onError: (err, voteType) => {
       // reset vote count
@@ -47,8 +47,8 @@ const PostVoteClient: FC<IPostVoteClientProps> = ({ postId, initialVoteCount, in
 
         if (err.response?.status === 404) {
           return toast({
-            title: "Post does not exist.",
-            description: "Cannot vote since this post does not exist.",
+            title: "Comment does not exist.",
+            description: "Cannot vote since this comment does not exist.",
             variant: "destructive",
           });
         }
@@ -88,7 +88,7 @@ const PostVoteClient: FC<IPostVoteClientProps> = ({ postId, initialVoteCount, in
   }, [initialVote]);
 
   return (
-    <div className="flex flex-col gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
+    <div className="flex gap-1">
       <Button size="sm" variant="ghost" aria-label="upvote" onClick={() => votePost("UP")}>
         <ArrowBigUp
           className={cn("h-5 w-5 text-zinc-700", {
@@ -110,4 +110,4 @@ const PostVoteClient: FC<IPostVoteClientProps> = ({ postId, initialVoteCount, in
   );
 };
 
-export default PostVoteClient;
+export default CommentVotes;

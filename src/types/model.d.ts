@@ -52,7 +52,7 @@ export type TUser = {
   name: string;
   email: string;
   username: string;
-  image: string | null;
+  image: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -71,4 +71,32 @@ export type ExtendedPost = TPost & {
   votes: TVote[];
   comments: TComment[];
   subreddit: TSubreddit;
+};
+
+export type CachedPost = {
+  id: number;
+  title: string;
+  authorUsername: string;
+  content: any;
+  createdAt: string;
+};
+
+export type DBPost = TPost & {
+  author: TUser;
+  votes: TVote[];
+};
+
+export type CommentWithVotesAndAuthor = TComment & {
+  author: TUser;
+  votes: TCommentVote[];
+};
+
+export type CommentWithReplies = CommentWithVotesAndAuthor & {
+  replies: CommentWithVotesAndAuthor[];
+};
+
+export type SearchResult = {
+  subreddit: TSubreddit;
+  postCount: number;
+  subCount: number;
 };

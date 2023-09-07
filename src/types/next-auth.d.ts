@@ -12,7 +12,7 @@ type UserData = {
 };
 
 type JWTData = {
-  user: UserData;
+  user: UserData | null;
   accessToken: string;
   accessTokenExpiry: number;
   refreshToken: string;
@@ -27,7 +27,7 @@ declare module "next-auth/jwt" {
 
 declare module "next-auth" {
   interface Session {
-    user: UserData;
+    user: UserData | null;
     expires: number;
   }
 }

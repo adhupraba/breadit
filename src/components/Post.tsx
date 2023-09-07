@@ -30,7 +30,7 @@ const Post: FC<IPostProps> = ({ subredditName, post, commentCount, voteCount, us
               r/{subredditName}
             </a>
             <span className="px-1">•</span>
-            <span>Posted by u/{post.author.name}</span> {formatTimeToNow(new Date(post.createdAt))}
+            <span>Posted by u/{post.author.username}</span> {formatTimeToNow(new Date(post.createdAt))}
           </div>
 
           <a href={`/r/${subredditName}/post/${post.id}`}>

@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/Toaster";
@@ -5,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Breadit",
   description: "A Reddit clone built with Next.js, TypeScript and Go.",
 };

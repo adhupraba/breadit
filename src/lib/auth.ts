@@ -1,6 +1,6 @@
-import { serverEnv } from "@/constants";
-import axios from "axios";
-import { Account, CallbacksOptions, NextAuthOptions, Profile, getServerSession } from "next-auth";
+import { EXPIRY_THRESHOLD, SESSION_MAX_AGE, serverEnv } from "@/constants";
+import type { Account, CallbacksOptions, NextAuthOptions, Profile } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
@@ -9,33 +9,49 @@ import { serverAxios } from "./server-axios";
 import { TApiRes } from "@/types/helpers";
 import { TUser } from "@/types/model";
 
-async function refreshAccessToken(tokenObject: JWT) {
+async function refreshAccessToken(tokenObject: JWT): Promise<JWT> {
   // Get a new set of tokens with a refreshToken
-  const { data } = await axios.get(`${serverEnv.apiUrl}/api/auth/refresh`);
+  const { data } = await serverAxios().get<TApiRes<{ accessToken: string; accessTokenExpiry: number }>>(
+    `${serverEnv.apiUrl}/api/auth/refresh`
+  );
+
+  // console.log("refresh token response =>", data);
+
+  if (data.error) {
+    return { ...tokenObject, user: null, accessToken: "", accessTokenExpiry: 0 };
+  }
+
+  cookies().set({
+    name: "access_token",
+    value: data.data.accessToken,
+    expires: new Date(data.data.accessTokenExpiry),
+    maxAge: Math.round(data.data.accessTokenExpiry - Date.now()) / 1000,
+    httpOnly: true,
+  });
 
   return {
     ...tokenObject,
-    accessToken: data.accessToken,
+    accessToken: data.data.accessToken,
+    accessTokenExpiry: data.data.accessTokenExpiry,
   };
 }
 
 const callbacks: Partial<CallbacksOptions<Profile, Account>> = {
   jwt: async ({ token, user }) => {
-    // console.log("jwt callback: token =>", token);
-    // console.log("jwt callback: user =>", user);
-
     if (user) {
       token = user as any;
     }
-
-    // console.log("current time =>", Date.now());
 
     // accessTokenExpiry and refreshTokenExpiry is in milliseconds
     // If accessTokenExpiry is 24 hours, we have to refresh token before 24 hours pass.
     const shouldRefreshTime = Math.round(token.accessTokenExpiry - Date.now());
 
+    // console.log("shouldRefreshTime", shouldRefreshTime);
+
     // If the token is still valid, just return it.
-    if (shouldRefreshTime > 0) {
+    // if the countdown is above EXPIRY_THRESHOLD then use the same token, else if less than EXPIRY_THRESHOLD call refresh token
+    if (shouldRefreshTime > EXPIRY_THRESHOLD) {
+      // console.log("token is still valid");
       return token;
     }
 
@@ -43,20 +59,9 @@ const callbacks: Partial<CallbacksOptions<Profile, Account>> = {
     // If the call arrives after 23 hours have passed, we allow to refresh the token.
     token = await refreshAccessToken(token);
 
-    //  return {
-    //    id: dbUser.id,
-    //    name: dbUser.name,
-    //    email: dbUser.email,
-    //    picture: dbUser.image,
-    //    username: dbUser.username,
-    //  };
-
     return token;
   },
   session: async ({ token, session }) => {
-    // console.log("session callback: token =>", token);
-    // console.log("session callback: session =>", session);
-
     if (token) {
       session.user = token.user;
       session.expires = token.accessTokenExpiry;
@@ -78,7 +83,7 @@ type SigninResData = {
 };
 
 export const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt", maxAge: 60 * 60 },
+  session: { strategy: "jwt", maxAge: SESSION_MAX_AGE },
   pages: { signIn: "/sign-in" },
   providers: [
     CredentialsProvider({

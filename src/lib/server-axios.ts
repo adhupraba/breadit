@@ -11,5 +11,6 @@ export const serverAxios = () => {
     headers: {
       Cookie: cookieStore.map((cookie) => `${cookie.name}=${cookie.value}`).join(";"),
     },
+    validateStatus: () => true,
   });
 };

@@ -18,10 +18,10 @@ const MiniCreatePost: FC<IMiniCreatePostProps> = ({ session }) => {
   const pathname = usePathname();
 
   return (
-    <li className="overflow-hidden rounded-md bg-white shadow">
+    <div className="overflow-hidden rounded-md bg-white shadow">
       <div className="h-full px-6 py-4 flex justify-between gap-6">
         <div className="relative">
-          <UserAvatar user={{ name: session?.user.name, image: session?.user.image }} />
+          <UserAvatar user={{ name: session?.user?.name, image: session?.user?.image }} />
 
           <span className="absolute top-7 right-0 rounded-full w-3 h-3 bg-green-500 outline outline-2 outline-white"></span>
         </div>
@@ -34,7 +34,7 @@ const MiniCreatePost: FC<IMiniCreatePostProps> = ({ session }) => {
           <Link2 className="text-zinc-600" />
         </Button>
       </div>
-    </li>
+    </div>
   );
 };
 
