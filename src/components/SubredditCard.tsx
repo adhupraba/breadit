@@ -1,7 +1,7 @@
 import { SubredditListItem } from "@/types/model";
 import { UserCheck2 } from "lucide-react";
 import { FC, Fragment } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/Tooltip";
 
 interface ISubredditCardProps {
   subredditItem: SubredditListItem;
