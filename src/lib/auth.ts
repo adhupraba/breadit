@@ -100,13 +100,19 @@ export const authOptions: NextAuthOptions = {
         const loginCookies = headers["set-cookie"] as string[];
         const cookiesArr: ResponseCookie[] = loginCookies.map((cookie) => {
           const split = cookie.split("; ");
+          const isSecure = split?.[4] === "Secure";
+          const sameSite = (
+            !isSecure ? split?.[4]?.split?.("=")?.[1]?.toLowerCase() : split?.[5]?.split?.("=")?.[1]?.toLowerCase()
+          ) as "lax" | "strict" | "none" | undefined;
 
           return {
             name: split[0].split("=")[0],
             value: split[0].split("=")[1],
-            expires: new Date(split[1].split("=")[1]),
+            path: split[1].split("=")[1],
             maxAge: parseInt(split[2].split("=")[1]),
             httpOnly: true,
+            secure: isSecure,
+            sameSite,
           };
         });
 
