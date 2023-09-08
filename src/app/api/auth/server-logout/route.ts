@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { serverEnv } from "@/constants";
 import { cookies } from "next/headers";
-import { NextApiRequest } from "next";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: Request) {
   try {
     const res = await fetch(`${serverEnv.apiUrl}/api/auth/sign-out`, {
       method: "GET",

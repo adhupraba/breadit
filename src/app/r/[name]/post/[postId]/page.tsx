@@ -49,7 +49,7 @@ const PostPage = async ({ params: { postId } }: IPostPageProps) => {
     <div>
       <div className="h-full flex flex-col sm:flex-row items-center sm:items-start justify-between">
         <Suspense fallback={<PostVoteShell />}>
-          {/* @ts-expect-error server component */}
+          {/* @ts-ignore server component */}
           <PostVoteServer
             postId={(post?.id ?? cachedPost?.id)!}
             getData={cachedPost?.id ? getPostData : undefined}
@@ -68,7 +68,7 @@ const PostPage = async ({ params: { postId } }: IPostPageProps) => {
           <EditorOutput content={post?.content ?? cachedPost?.content} />
 
           <Suspense fallback={<Loader2 className="h-5 w-5 animate-spin text-zinc-500" />}>
-            {/* @ts-expect-error server component */}
+            {/* @ts-ignore server component */}
             <CommentsSection postId={post?.id ?? cachedPost!.id} />
           </Suspense>
         </div>
