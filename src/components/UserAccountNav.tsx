@@ -44,6 +44,10 @@ const UserAccountNav: FC<IUserAccountNavProps> = ({ user }) => {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
+          <Link href="/r?createdBy=self">My communities</Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
           <Link href="/settings">Settings</Link>
         </DropdownMenuItem>
 

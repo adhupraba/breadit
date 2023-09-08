@@ -100,3 +100,9 @@ export type SearchResult = {
   postCount: number;
   subCount: number;
 };
+
+export type SubredditListItem = {
+  subreddit: TSubreddit;
+  postCount: number;
+  subCount: number;
+};
