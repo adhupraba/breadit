@@ -1,34 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Backend repo - https://github.com/adhupraba/breadit-server
 
-## Getting Started
+---
 
-First, run the development server:
+Inorder to test cross-site cookies sharing install `ngrok` and `localtunnel` cli tools
+
+> Cross site cookies are cookies set in the client from a different domain. Client and server are under different domains. eg: Client - https://www.abc.com, Server - https://www.def.com
+
+---
+
+run the web using the command
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+ngrok http 3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+run the server using the command
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+lt --port 8000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
 
-## Learn More
+Normally cross-site cookies are not sent to the server if server is in a different domain. So as a work around what is done is to implement a `api path rewrite` in the `next.config.js`
 
-To learn more about Next.js, take a look at the following resources:
+All backend requests from the ui are made to a dummy `/api/gateway/...` nextjs api endpoint which in turn gets redirected to the actual backend api due to the rewrite rule
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+In this way we are able to send our own cross site cookies to our server which was previously not possible

@@ -100,13 +100,19 @@ export const authOptions: NextAuthOptions = {
         const loginCookies = headers["set-cookie"] as string[];
         const cookiesArr: ResponseCookie[] = loginCookies.map((cookie) => {
           const split = cookie.split("; ");
+          const token = split[0];
+          const path = split[1];
+          const httpOnly = split[2] === "HttpOnly";
+          const maxAge = httpOnly ? split[3] : split[2];
 
           return {
-            name: split[0].split("=")[0],
-            value: split[0].split("=")[1],
-            expires: new Date(split[1].split("=")[1]),
-            maxAge: parseInt(split[2].split("=")[1]),
+            name: token.split("=")[0],
+            value: token.split("=")[1],
+            path: path.split("=")[1],
+            maxAge: parseInt(maxAge.split("=")[1]),
             httpOnly: true,
+            secure: true,
+            sameSite: "none",
           };
         });
 

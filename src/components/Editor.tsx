@@ -6,7 +6,7 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import type EditorJS from "@editorjs/editorjs";
-import { webEnv } from "@/constants";
+import { localTunnelHeader, webEnv } from "@/constants";
 import { uploadFiles } from "@/lib/uploadthing";
 import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -98,6 +98,7 @@ const Editor: FC<IEditorProps> = ({ subredditId }) => {
             class: LinkTool,
             config: {
               endpoint: `${webEnv.apiUrl}/api/utils/link`,
+              headers: localTunnelHeader,
             },
           },
           image: {

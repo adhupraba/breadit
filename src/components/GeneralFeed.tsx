@@ -9,8 +9,7 @@ interface IGeneralFeedProps {}
 
 const GeneralFeed = async () => {
   const { data, status } = await serverAxios().get<TApiRes<ExtendedPost[]>>(
-    `/api/post/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=1`,
-    { validateStatus: () => true }
+    `/api/post/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=1`
   );
 
   if (data.error) {

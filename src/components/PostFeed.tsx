@@ -63,7 +63,7 @@ const PostFeed: FC<IPostFeedProps> = ({ initialPosts, subredditName }) => {
 
         if (idx === posts.length - 1) {
           return (
-            <li key={post.id} ref={ref}>
+            <li key={idx} ref={ref}>
               <Post
                 subredditName={post.subreddit.name}
                 post={post}
@@ -77,7 +77,7 @@ const PostFeed: FC<IPostFeedProps> = ({ initialPosts, subredditName }) => {
 
         return (
           <Post
-            key={post.id}
+            key={idx}
             subredditName={post.subreddit.name}
             post={post}
             commentCount={post.comments.length}

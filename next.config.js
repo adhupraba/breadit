@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ["static.crunchyroll.com", "uploadthing.com"],
   },
+  rewrites: async () => {
+    return [{ source: "/api/gateway/:path*", destination: `${process.env.API_URL}/:path*` }];
+  },
 };
 
 module.exports = nextConfig;
