@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server";
-import { serverEnv } from "@/constants";
 import { cookies } from "next/headers";
+import { serverAxios } from "@/lib/server-axios";
 
-export async function GET(req: Request) {
+export const dynamic = "force-dynamic";
+
+export async function GET() {
   try {
-    const res = await fetch(`${serverEnv.apiUrl}/api/auth/sign-out`, {
-      method: "GET",
-      credentials: "include",
-      headers: req.headers as any,
-    });
+    const { data } = await serverAxios().get("/api/auth/sign-out");
 
-    if (!res.ok) {
-      throw new Error(await res.json());
-    }
+    console.log("logout api response =>", data);
 
     cookies().delete("access_token");
     cookies().delete("refresh_token");
