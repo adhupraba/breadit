@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
@@ -22,6 +23,7 @@ export default function RootLayout({ children, authModal }: { children: React.Re
           <Navbar />
           {authModal}
           <div className="container max-w-7xl mx-auto h-full pt-12">{children}</div>
+          <Analytics />
         </Providers>
         <Toaster />
       </body>
