@@ -1,3 +1,5 @@
+Live application - https://breadit-chi.vercel.app/
+
 Backend repo - https://github.com/adhupraba/breadit-server
 
 ---
