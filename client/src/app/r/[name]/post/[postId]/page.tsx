@@ -35,7 +35,6 @@ const PostPage = async ({ params: { postId } }: IPostPageProps) => {
   if (!cachedPost && !post) return notFound();
 
   const getPostData = async (): Promise<DBPost | null> => {
-    console.log("making api call to force fetch data....");
     const { data } = await serverAxios().get<TApiRes<PostResponse>>(`/post/${postId}?force=true`);
 
     if (data.error) {
