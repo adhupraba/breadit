@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: server
+      dockerfile: dockerfile.dev.server
+    env_file:
+      - .env.server
+    ports:
+      - "2801:2801"
+    container_name: breadit_server
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:2801/gateway/health/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: always
+
+  client:
+    build:
+      context: client
+      dockerfile: dockerfile.dev.client
+      args:
+        - API_URL=http://server:2801
+    env_file:
+      - .env.client
+    ports:
+      - "2800:2800"
+    container_name: breadit_client
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:2800/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: always
