@@ -52,17 +52,15 @@ jobs:
           file: ./client/dockerfile.prod.client
           context: client
           platforms: linux/${{ matrix.architecture }}
-          push: true
+          load: true
           tags: ${{ env.IMAGE_NAME }}:${{ matrix.architecture }}
           build-args: |
             API_URL=${{ secrets.CLIENT_API_URL }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:${{ matrix.architecture }}-cache
           cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:${{ matrix.architecture }}-cache,mode=max
 
-      - name: Remove Docker Manifest
-        run: |
-          docker manifest rm ${{ env.IMAGE_NAME }}:${{ matrix.architecture }} || true
-          docker manifest rm ${{ env.IMAGE_NAME }} || true
+      - name: Push Docker image
+        run: docker push ${{ env.IMAGE_NAME }}:${{ matrix.architecture }}
 
   client-manifest:
     needs: client-build

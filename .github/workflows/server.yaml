@@ -46,21 +46,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
           file: ./server/dockerfile.prod.server
           context: server
           platforms: linux/${{ matrix.architecture }}
-          push: true
+          load: true
           tags: ${{ env.IMAGE_NAME }}:${{ matrix.architecture }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:${{ matrix.architecture }}-cache
           cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:${{ matrix.architecture }}-cache,mode=max
 
-      - name: Remove Docker Manifest
-        run: |
-          docker manifest rm ${{ env.IMAGE_NAME }}:${{ matrix.architecture }} || true
-          docker manifest rm ${{ env.IMAGE_NAME }} || true
+      - name: Push Docker image
+        run: docker push ${{ env.IMAGE_NAME }}:${{ matrix.architecture }}
 
   server-manifest:
     needs: server-build
