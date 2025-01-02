@@ -74,7 +74,7 @@ jobs:
       - name: Save Docker layer cache
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache-${{ matrix.architecture }}
+          path: /tmp/.buildx-cache-${{ matrix.architecture }}/server
           key: ${{ runner.os }}-buildx-${{ matrix.architecture }}-${{ github.sha }}
 
   server-manifest:
@@ -104,6 +104,9 @@ jobs:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/breadit-server"
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Prepare .env
         uses: ./.github/actions/prepare-env
         with:
