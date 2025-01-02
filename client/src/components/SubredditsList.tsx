@@ -31,8 +31,6 @@ const SubredditsList: FC<ISubredditsList> = ({ initialSubreddits }) => {
     queryKey,
     async ({ pageParam = 1 }) => {
       const cq = searchParams.get("createdBy");
-      console.log("infinite query page param =>", pageParam, cq);
-
       const q = cq ? `&createdBy=${cq}` : "";
       const url = `/subreddit/list?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}${q}`;
 

@@ -8,8 +8,6 @@ export async function GET() {
   try {
     const { data } = await serverAxios().get("/auth/sign-out");
 
-    console.log("logout api response =>", data);
-
     cookies().delete("access_token");
     cookies().delete("refresh_token");
     cookies().delete("logged_in");

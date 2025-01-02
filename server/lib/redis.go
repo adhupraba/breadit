@@ -15,5 +15,7 @@ func ConnectRedis() {
 		log.Fatalln("Unable to connect to redis:", err)
 	}
 
+	log.Println("Connected to redis on", EnvConfig.RedisUrl)
+
 	Redis = redis.NewClient(opt)
 }

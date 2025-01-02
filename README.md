@@ -13,6 +13,7 @@ The live project is hosted at https://breadit.adhupraba.com/
   - [Running Locally](#running-locally)
     - [Backend Setup](#backend-setup-django-server)
     - [Frontend Setup](#frontend-setup-react-client)
+- [Generating Unique Secret Keys](#secret-keys)
 - [Cross Site Cookies](#cross-site-cookies)
 - [API Access](#api-access)
 
@@ -35,14 +36,33 @@ The project includes a Docker setup for running both the client and server simul
 
 - Update the `.env.client` and `.env.server` files with appropriate values.
 
-- Please generate unique keys for secret env variables at the time of running the application for better security
+- Please generate unique keys for secret env variables at the time of running the application for better security. See [Generating Unique Secret Keys](#secret-keys) section.
+
+2. Connecting to local database and redis from the Docker containers
+
+> Note: Step 2 not needed if you are using a cloud hosted database/redis or a postgres/redis service in the compose file.
+
+- If you are using a local database and local redis server and want to connect to the application, some changes to the env are needed.
+
+- Identify the `docker0` interface's ip address:
 
   ```bash
-  # generates 32 bytes key (use this for generating secret and file encryption key)
-  openssl enc -aes-128-cbc -k secret -P -md sha1
+  ip addr show docker0
+  ```
 
-  # generates 64 bytes key (use this for generating jwt secrets)
-  openssl enc -aes-256-cbc -k secret -P -md sha1
+- Copy the `inet` ipv4 address. It will look like this `127.17.0.1`.
+
+- Update the `/etc/hosts` in the host machine.
+
+  ```bash
+  172.17.0.1 host.docker.internal
+  ```
+
+- Update the hostname of database and redis urls in .env.server
+
+  ```bash
+  DB_URL=postgresql://<user>:<password>@172.17.0.1:5432/<dbname>
+  REDIS_URL=redis://172.17.0.1:6379
   ```
 
 3. **Build and Run the Docker Containers**:
@@ -88,15 +108,7 @@ go mod tidy
 
 - Update the `.env` file with appropriate values
 
-- Please generate unique keys at the time of running the application for better security
-
-  ```bash
-  # generates 32 bytes key (use this for generating secret and file encryption key)
-  openssl enc -aes-128-cbc -k secret -P -md sha1
-
-  # generates 64 bytes key (use this for generating jwt secrets)
-  openssl enc -aes-256-cbc -k secret -P -md sha1
-  ```
+- Please generate unique keys at the time of running the application for better security. See [Generating Unique Secret Keys](#secret-keys) section.
 
 4. **To generate SQL migrations**
 
@@ -190,15 +202,7 @@ npm install
 
 - Update the `.env` file with appropriate values
 
-- Please generate unique keys at the time of running the application for better security
-
-  ```bash
-  # generates 32 bytes key (use this for generating secret and file encryption key)
-  openssl enc -aes-128-cbc -k secret -P -md sha1
-
-  # generates 64 bytes key (use this for generating jwt secrets)
-  openssl enc -aes-256-cbc -k secret -P -md sha1
-  ```
+- Please generate unique keys at the time of running the application for better security. See [Generating Unique Secret Keys](#secret-keys) section.
 
 4. **Start the Frontend Development Server**:
 
@@ -210,6 +214,18 @@ npm run dev
 
 ```bash
 npm run build
+```
+
+---
+
+## **Generating Unique Secret Keys**
+
+```bash
+  # generates 32 bytes key (use this for generating secret and file encryption key)
+  openssl enc -aes-128-cbc -k secret -P -md sha1
+
+  # generates 64 bytes key (use this for generating jwt secrets)
+  openssl enc -aes-256-cbc -k secret -P -md sha1
 ```
 
 ---

@@ -93,8 +93,6 @@ export const authOptions: NextAuthOptions = {
           password: credentials?.password,
         });
 
-        console.log("sign in data =>", data, headers);
-
         if (data.error || !data.data?.user) return null;
 
         const loginCookies = headers["set-cookie"] as string[];
