@@ -62,10 +62,16 @@ jobs:
           platforms: linux/${{ matrix.architecture }}
           push: true
           tags: ${{ env.IMAGE_NAME }}-${{ matrix.architecture }}
+          provenance: false
           build-args: |
             API_URL=${{ secrets.CLIENT_API_URL }}
           cache-from: type=local,src=/tmp/.buildx-cache-${{ matrix.architecture }}
           cache-to: type=local,dest=/tmp/.buildx-cache-${{ matrix.architecture }}
+
+      - name: Remove Docker Manifest
+        run: |
+          docker manifest rm ${{ env.IMAGE_NAME }}-${{ matrix.architecture }}:latest || true
+          docker manifest rm ${{ env.IMAGE_NAME }}-${{ matrix.architecture }} || true
 
       - name: Save Docker layer cache
         uses: actions/cache@v3
