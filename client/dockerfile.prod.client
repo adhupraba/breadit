@@ -1,5 +1,5 @@
 # Stage 1: Build Next.js app
-FROM --platform=$BUILDPLATFORM node:23-alpine AS builder
+FROM --platform=$TARGETPLATFORM node:23-alpine AS builder
 
 WORKDIR /app
 
@@ -12,13 +12,13 @@ RUN --mount=type=cache,target=/root/.npm npm install
 
 # Build the React app
 COPY . .
-RUN --mount=type=cache,target=/root/.next/cache npm run build
+RUN --mount=type=cache,target=/app/.next npm run build
 
 # Remove devDependencies to reduce image size
 RUN npm prune --production && rm -rf node_modules/@next/swc*
 
 # Stage 2: Serve the app
-FROM --platform=$BUILDPLATFORM node:23-alpine
+FROM --platform=$TARGETPLATFORM node:23-alpine
 
 WORKDIR /app
 
