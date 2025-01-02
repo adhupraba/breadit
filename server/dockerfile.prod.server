@@ -1,0 +1,49 @@
+# Stage 1: Build the Go executable
+FROM golang:1.23.4-alpine3.21 AS builder
+
+# Set environment variables for Go
+ENV CGO_ENABLED=0 GOOS=linux
+
+# Create a working directory
+WORKDIR /app
+
+# Install necessary dependencies for the build
+RUN apk add --no-cache upx
+
+# Copy Go module files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Install goose for database migrations
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+
+# Copy the source code into the container
+COPY . .
+
+# Build the Go application
+RUN go build -tags netgo -ldflags '-s -w' -o main
+
+RUN upx --best --lzma -o main.upx main
+
+# Stage 2: Create the lightweight runtime image
+FROM alpine:3.21
+
+# Set environment variables for the runtime
+ENV GOOSE_BIN=/go/bin/goose
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates
+
+# Copy the built application from the builder stage
+COPY --from=builder /app/main.upx /app/main.upx
+COPY --from=builder /go/bin/goose /go/bin/goose
+COPY internal/migrations /app/migrations
+
+# Set the working directory
+WORKDIR /app
+
+# Make the binary executable
+RUN chmod +x /app/main.upx /go/bin/goose
+
+# Command to run migrations and start the server
+CMD ["sh", "-c", "/go/bin/goose -dir /app/migrations postgres \"$DB_URL\" up && /app/main.upx"]

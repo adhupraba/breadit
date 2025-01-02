@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  server:
+    image: adhupraba/breadit-server:latest
+    env_file:
+      - .env.server
+    container_name: breadit_server
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:2801/gateway/health/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    network_mode: host
+    restart: always
+
+  client:
+    image: adhupraba/breadit-client:latest
+    env_file:
+      - .env.client
+    container_name: breadit_client
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:2800/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    network_mode: host
+    restart: always
