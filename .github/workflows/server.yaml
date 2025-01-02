@@ -49,7 +49,7 @@ jobs:
       - name: Restore Docker layer cache
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache-${{ matrix.architecture }}
+          path: /tmp/.buildx-cache-${{ matrix.architecture }}/server
           key: ${{ runner.os }}-buildx-${{ matrix.architecture }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.architecture }}-
@@ -57,11 +57,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          file: ./client/dockerfile.prod.server
+          file: ./server/dockerfile.prod.server
           context: server
           platforms: linux/${{ matrix.architecture }}
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ matrix.architecture }}
+          tags: ${{ env.IMAGE_NAME }}-${{ matrix.architecture }}
           cache-from: type=local,src=/tmp/.buildx-cache-${{ matrix.architecture }}
           cache-to: type=local,dest=/tmp/.buildx-cache-${{ matrix.architecture }}
 
@@ -87,7 +87,7 @@ jobs:
 
       - name: Create and Push Multi-Arch Manifest
         run: |
-          docker manifest create ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:amd64 ${{ env.IMAGE_NAME }}:arm64
+          docker manifest create ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}-amd64 ${{ env.IMAGE_NAME }}-arm64
           docker manifest push ${{ env.IMAGE_NAME }}:latest
 
   server-deploy:

@@ -7,6 +7,7 @@ import "@/styles/globals.css";
 export const metadata: Metadata = {
   title: "Breadit",
   description: "A Reddit clone built with Next.js, TypeScript and Go.",
+  icons: "/favicon.ico",
 };
 
 export default function RootLayout({ children, authModal }: { children: React.ReactNode; authModal: React.ReactNode }) {

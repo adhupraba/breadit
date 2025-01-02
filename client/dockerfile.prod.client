@@ -1,5 +1,5 @@
 # Stage 1: Build Next.js app
-FROM node:23-alpine AS builder
+FROM --platform=$BUILDPLATFORM node:23-alpine AS builder
 
 WORKDIR /app
 
@@ -8,17 +8,17 @@ ENV API_URL=${API_URL}
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN --mount=type=cache,target=/root/.npm npm install
 
 # Build the React app
 COPY . .
-RUN npm run build
+RUN --mount=type=cache,target=/root/.next/cache npm run build
 
 # Remove devDependencies to reduce image size
 RUN npm prune --production && rm -rf node_modules/@next/swc*
 
 # Stage 2: Serve the app
-FROM node:23-alpine
+FROM --platform=$BUILDPLATFORM node:23-alpine
 
 WORKDIR /app
 
