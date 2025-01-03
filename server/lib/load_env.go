@@ -46,14 +46,10 @@ func LoadEnv() {
 		CorsAllowedOrigins: []string{},
 	}
 
-	if EnvConfig.Env == "" {
-		EnvConfig.Env = "development"
-	}
-
-	if os.Getenv("CORS_ALLOWED_ORIGINGS") == "" {
+	if os.Getenv("CORS_ALLOWED_ORIGINS") == "" {
 		EnvConfig.CorsAllowedOrigins = []string{"*"}
 	} else {
-		EnvConfig.CorsAllowedOrigins = strings.Split(os.Getenv("CORS_ALLOWED_ORIGINGS"), ",")
+		EnvConfig.CorsAllowedOrigins = strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ",")
 	}
 
 	if EnvConfig.Port == "" {
