@@ -99,7 +99,7 @@ jobs:
           secrets_json: |
             {
               \"PORT\": \"${{ secrets.CLIENT_PORT }}\",
-              \"ENV\": \"${{ secrets.ENV }}\",
+              \"NODE_ENV\": \"${{ secrets.ENV }}\",
               \"API_URL\": \"${{ secrets.CLIENT_API_URL }}\",
               \"NEXTAUTH_SECRET\": \"${{ secrets.CLIENT_NEXTAUTH_SECRET }}\",
               \"UPLOADTHING_SECRET\": \"${{ secrets.CLIENT_UPLOADTHING_SECRET }}\",
